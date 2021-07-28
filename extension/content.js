@@ -1,5 +1,35 @@
 (function () {
 
+  const DARK_MODE_SELECTORS = {
+    "text.actor": (el) => {
+      el.setAttribute("fill", "white");
+    },
+    ".actor-line": (el) => {
+      el.setAttribute("stroke", "white")
+    },
+    ".messageLine0": (el) => {
+      el.setAttribute("stroke", "white")
+    },
+    ".messageLine1": (el) => {
+      el.setAttribute("stroke", "white")
+    },
+    "#arrowhead": (el) => {
+      el.setAttribute("fill", "white");
+    },
+    ".messageText": (el) => {
+      el.setAttribute("fill", "white");
+    },
+    ".labelText": (el) => {
+      el.setAttribute("fill", "white");
+    },
+    ".loopText": (el) => {
+      el.setAttribute("fill", "white");
+    },
+    ".noteText": (el) => {
+      el.setAttribute("fill", "white");
+    }
+  };
+
   const $ = (selector, ctx = document) => [].slice.call(ctx.querySelectorAll(selector));
 
   function setupChart(elem, code) {
@@ -63,7 +93,25 @@
     processElement(event.target);
   }
 
+  function toggleDarkMode() {
+    console.log('toggling...')
+    for (const [key, transform] of Object.entries(DARK_MODE_SELECTORS)) {
+      const element = document.querySelector(key);
+      transform(element);
+    }
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
+    // Configure Dark Mode
+    chrome.storage.sync.get({
+      darkModeEnabled: false
+    }, function(items) {
+      if (items.darkModeEnabled) {
+        console.log('detected dark mode...')
+        toggleDarkMode();
+      }
+    });
+
     // Github
     $('[lang="mermaid"]').forEach(processElement);
     $('.language-mermaid').forEach(processElement);
